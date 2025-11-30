@@ -1,4 +1,3 @@
-// src/models/applicationModel.js
 import mongoose from "mongoose";
 import { APPLICATION_STATUS } from "../utils/constants.js";
 
@@ -27,7 +26,7 @@ const jobSalarySnapshotSchema = new Schema(
 
 const applicationSchema = new Schema(
   {
-    // Relations
+    
     job: {
       type: Schema.Types.ObjectId,
       ref: "job",
@@ -35,7 +34,6 @@ const applicationSchema = new Schema(
       index: true,
     },
 
-    // Denormalized for faster employer queries
     company: {
       type: Schema.Types.ObjectId,
       ref: "company",
@@ -50,7 +48,6 @@ const applicationSchema = new Schema(
       index: true,
     },
 
-    // Snapshot of resume at time of apply
     resumeUrl: { type: String, default: null },
     resumePublicId: { type: String, default: null },
 
@@ -69,7 +66,7 @@ const applicationSchema = new Schema(
 
     viewed: {
       type: Boolean,
-      default: false, // employer viewed or not
+      default: false, 
     },
 
     rejectedReason: {
@@ -78,7 +75,6 @@ const applicationSchema = new Schema(
       maxlength: 2000,
     },
 
-    // Optional: interview date when status = 'interview'
     interviewDate: {
       type: Date,
       default: null,

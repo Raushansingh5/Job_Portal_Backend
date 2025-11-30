@@ -11,7 +11,7 @@ function getEnv() {
     SMTP_PASS: process.env.SMTP_PASS,
     FROM_NAME: process.env.FROM_NAME || "App",
     FROM_EMAIL: process.env.FROM_EMAIL || "no-reply@example.com",
-    SMTP_VERIFY: process.env.SMTP_VERIFY === "true" // optional verify logging
+    SMTP_VERIFY: process.env.SMTP_VERIFY === "true" 
   };
 }
 
@@ -20,12 +20,25 @@ async function resolveHostToIPv4(host) {
     const r = await dns.lookup(host, { family: 4 });
     if (r && r.address) return r.address;
   } catch (err) {
-    // fallback to hostname if lookup fails
+
   }
   return host;
 }
 
 async function createTransporter() {
+  if (process.env.NODE_ENV === "test") {
+    return {
+      sendMail: async () => {
+        return {
+          accepted: [],
+          rejected: [],
+          messageId: "test-message-id",
+          testMode: true,
+        };
+      }
+    };
+  }
+
   if (transporter) return transporter;
 
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_VERIFY } = getEnv();
@@ -50,7 +63,7 @@ async function createTransporter() {
     debug: SMTP_VERIFY,
   });
 
-  // optional verification during startup
+  
   if (SMTP_VERIFY) {
     transporter.verify((err, success) => {
       if (err) {
@@ -64,12 +77,22 @@ async function createTransporter() {
   return transporter;
 }
 
-/**
- * sendEmail({ to, subject, html, text })
- */
+
 export const sendEmail = async ({ to, subject, html, text }) => {
   const { FROM_NAME, FROM_EMAIL } = getEnv();
+
+  
+  if (process.env.NODE_ENV === "test") {
+    return {
+      skipped: true,
+      to,
+      subject,
+      messageId: "test-skip",
+    };
+  }
+
   const t = await createTransporter();
+
   try {
     return await t.sendMail({
       from: `"${FROM_NAME}" <${FROM_EMAIL}>`,

@@ -429,9 +429,6 @@ export const getProfileById = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { user }, "OK"));
   }
 
-  // ================================
-  // CASE 2: Public profile view (other users)
-  // ================================
   const user = await userModel
     .findById(id)
     .select("name role avatarUrl bio location skills company")

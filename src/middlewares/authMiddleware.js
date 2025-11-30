@@ -18,14 +18,13 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const payload = jwt.verify(token, secret);
-    const id = payload.id || payload.userId || payload.sub; // tolerant of different claim names
-
+    const id = payload.id || payload.userId || payload.sub; 
     if (!id) return next(new ApiError("Invalid token payload", 401));
 
     const user = await userModel.findById(id).select("_id role emailVerified company");
     if (!user) return next(new ApiError("User not found", 401));
 
-    // attach both id and a minimal safe snapshot to req.user
+
     req.userId = user._id.toString();
     req.user = {
       id: req.userId,

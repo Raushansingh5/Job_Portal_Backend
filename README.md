@@ -1,7 +1,7 @@
 # Job Portal API
 
 A secure, role-based Job Portal backend built using **Node.js**, **Express**, and **MongoDB**.  
-Supports **jobseekers**, **employers**, and **admins** with authentication, job posting, company management, and job applications — all with strong security & validation.
+Supports **jobseekers**, **employers**, and **admins** with authentication, job posting, company management, and job applications — all with strong security, validation, and **automated testing**.
 
 ---
 
@@ -75,6 +75,7 @@ Supports **jobseekers**, **employers**, and **admins** with authentication, job 
 - Joi validation  
 - Rate limiting  
 - Sanitization middlewares  
+- Jest + Supertest (Automated Testing)
 
 ---
 
@@ -83,45 +84,18 @@ Supports **jobseekers**, **employers**, and **admins** with authentication, job 
 ```
 src/
   server.js
+  app.js
   config/
-    dbConfig.js
   routes/
-    userRoutes.js
-    jobRoutes.js
-    companyRoutes.js
-    applicationRoutes.js
   controllers/
-    userController.js
-    jobController.js
-    companyController.js
-    applicationController.js
   models/
-    userModel.js
-    jobModel.js
-    companyModel.js
-    applicationModel.js
   middlewares/
-    authMiddleware.js
-    logoutMiddleware.js
-    roleMiddleware.js
-    validateMiddleware.js
-    sanitizeMiddleware.js
-    loginLimiter.js
-    verificationRateLimit.js
   utils/
-    asyncHandler.js
-    apiError.js
-    apiResponse.js
-    tokens.js
-    slugify.js
-    emails.js
-    uploadHelper.js
-    constants.js
-    JoiSchema/
-      authAndUserSchema.js
-      companySchema.js
-      jobSchema.js
-      applicationSchema.js
+tests/
+  health.test.js
+  auth.test.js
+  user.test.js
+  jobs.test.js
 ```
 
 ---
@@ -155,9 +129,6 @@ RESEND_VERIFY_MINUTES=5
 RESET_OTP_EXPIRES_MIN=10
 RESEND_RESET_MINUTES=5
 
-# Pagination Limit
-MAX_PAGE_LIMIT=100
-
 # Cookies
 COOKIE_SECURE=false
 COOKIE_SAME_SITE=lax
@@ -181,7 +152,7 @@ SMTP_FROM="Job Portal <noreply@yourdomain.com>"
 ## Run Server
 
 ```bash
-npm run start
+npm start
 ```
 
 Default URL:
@@ -221,8 +192,6 @@ POST   /api/users/session/refresh
 POST   /api/users/session/logout
 GET    /api/users/me
 PATCH  /api/users/me
-GET    /api/users
-GET    /api/users/:id
 ```
 
 ### **Companies**
@@ -232,8 +201,6 @@ GET    /api/companies
 GET    /api/companies/:idOrSlug
 PATCH  /api/companies/:id
 DELETE /api/companies/:id
-POST   /api/companies/:id/verify
-POST   /api/companies/:id/unverify
 ```
 
 ### **Jobs**
@@ -252,9 +219,6 @@ DELETE /api/jobs/:id
 POST   /api/applications/:jobId/apply
 GET    /api/applications/my
 GET    /api/applications/my/stats
-GET    /api/applications/job/:jobId
-GET    /api/applications/job/:jobId/stats
-GET    /api/applications/:id
 PATCH  /api/applications/:id/status
 PATCH  /api/applications/:id/viewed
 DELETE /api/applications/:id
@@ -270,11 +234,60 @@ DELETE /api/applications/:id
 
 ---
 
+# ✅ Automated Testing
+
+This project includes automated tests using:
+
+- **Jest** – Test runner  
+- **Supertest** – API testing  
+- **MongoDB Memory Server** – In-memory test DB  
+- **cross-env** – OS-independent test env  
+- **Mocked email sending**
+
+### Test Files
+```
+tests/
+  health.test.js
+  auth.test.js
+  user.test.js
+  jobs.test.js
+```
+
+---
+
+## ✔ Minimum Testing Coverage
+
+### 1️⃣ Health Test  
+- `/api/health` → 200
+
+### 2️⃣ Auth Tests  
+- Register validation fail  
+- Register success  
+- Login blocked (email unverified)  
+- Login success  
+
+### 3️⃣ Protected Route Test  
+- `/api/users/me` without token → 401  
+- `/api/users/me` with token → 200  
+
+### 4️⃣ Public Jobs Test  
+- `/api/jobs` → returns array  
+
+---
+
+## Run Tests
+
+```bash
+npm test
+```
+
+---
+
 ## Scripts
 ```json
 "scripts": {
   "start": "nodemon src/server.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
+  "test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
 }
 ```
 
@@ -288,9 +301,8 @@ This project is licensed under **ISC License**.
 ## Future Improvements
 - Swagger API documentation  
 - Admin dashboard UI  
-- Notification emails on status change  
+- Notification emails  
 - WebSockets for real-time updates  
-- Better employer analytics dashboard  
+- Better employer analytics  
 
 ---
-

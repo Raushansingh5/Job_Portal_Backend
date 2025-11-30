@@ -5,7 +5,6 @@ import ApiError from "../utils/apiError.js";
 const logoutMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization || "";
 
-  // no token → continue as unauthenticated
   if (!authHeader.startsWith("Bearer ")) {
     req.authenticated = false;
     return next();
