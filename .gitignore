@@ -49,7 +49,6 @@ temp/
 
 # Optional: ignore local scripts/test files
 scripts/
-tests/
 
 # MongoDB dump files
 dump/
