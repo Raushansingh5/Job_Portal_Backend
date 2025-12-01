@@ -1,4 +1,3 @@
-// eslint.config.mjs
 import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import globals from "globals";
