@@ -53,4 +53,4 @@ scripts/
 # MongoDB dump files
 dump/
 *.bson
-*.json
+
