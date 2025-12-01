@@ -1,7 +1,6 @@
 import request from "supertest";
 import app from "../src/app.js";
 import { connectTestDb, disconnectTestDb, clearDb } from "./setupTestDb.js";
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import {userModel} from "../src/models/userModel.js";
 

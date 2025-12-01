@@ -30,6 +30,7 @@ export const verifyAccessToken = (token) => {
   try {
     return jwt.verify(token, ACCESS_SECRET);
   } catch (err) {
+    console.log(err);
     throw new ApiError("Invalid or expired access token", 401);
   }
 };
@@ -50,6 +51,7 @@ export const verifyRefreshToken = (token) => {
   try {
     return jwt.verify(token, REFRESH_SECRET);
   } catch (err) {
+    console.log(err);
     throw new ApiError("Invalid or expired refresh token", 401);
   }
 };
