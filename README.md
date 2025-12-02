@@ -216,3 +216,6 @@ future_improvements:
   - VPS Deployment with Nginx + PM2
 
 license: "ISC"
+
+ignore:
+# Test CI/CD trigger
